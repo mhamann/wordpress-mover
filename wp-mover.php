@@ -28,31 +28,33 @@ class WordpressMover {
 	
 	private $oldUrl;
 	private $newUrl;
+	private $tablePrefix;
 	
-	private $optionsUpdate = "UPDATE wp_options SET option_value = replace(option_value, '{oldUrl}', '{newUrl}') WHERE option_name = 'home' OR option_name = 'siteurl';";
-	private $guidUpdate = "UPDATE wp_posts SET guid = replace(guid, '{oldUrl}','{newUrl}');";
-	private $contentUpdate = "UPDATE wp_posts SET post_content = replace(post_content, '{oldUrl}', '{newUrl}');";
+	private $optionsUpdate = "UPDATE {table_prefix}wp_options SET option_value = replace(option_value, '{oldUrl}', '{newUrl}') WHERE option_name = 'home' OR option_name = 'siteurl';";
+	private $guidUpdate = "UPDATE {table_prefix}wp_posts SET guid = replace(guid, '{oldUrl}','{newUrl}');";
+	private $contentUpdate = "UPDATE {table_prefix}wp_posts SET post_content = replace(post_content, '{oldUrl}', '{newUrl}');";
 
-	public function __construct($hostname, $username, $password, $database, $oldUrl, $newUrl) {
+	public function __construct($hostname, $username, $password, $database, $oldUrl, $newUrl, $tablePrefix = "") {
 		$this->dbHost = $hostname;
 		$this->dbUser = $username;
 		$this->dbPwd = $password;
 		$this->dbName = $database;
 		$this->oldUrl = $oldUrl;
 		$this->newUrl = $newUrl;
+		$this->tablePrefix = $tablePrefix;
 	}
 	
 	public function migrate() {
 		$conn = $this->connect();
 		
 		try {
-			mysql_query(str_replace(array("{oldUrl}", "{newUrl}"), array($this->oldUrl, $this->newUrl), $this->optionsUpdate)) or die(mysql_error());
+			mysql_query(str_replace(array("{table_prefix", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->optionsUpdate)) or die(mysql_error());
 			echo "<p>" . mysql_affected_rows($conn) . " option rows updated</p>";
 			
-			mysql_query(str_replace(array("{oldUrl}", "{newUrl}"), array($this->oldUrl, $this->newUrl), $this->guidUpdate)) or die(mysql_error());
+			mysql_query(str_replace(array("{table_prefix", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->guidUpdate)) or die(mysql_error());
 			echo "<p>" . mysql_affected_rows($conn) . " guid rows updated</p>";
 			
-			mysql_query(str_replace(array("{oldUrl}", "{newUrl}"), array($this->oldUrl, $this->newUrl), $this->contentUpdate)) or die(mysql_error());
+			mysql_query(str_replace(array("{table_prefix", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->contentUpdate)) or die(mysql_error());
 			echo "<p>" . mysql_affected_rows($conn) . " content rows updated</p>";
 		} catch (Exception $ex) {
 			echo "<p>Whoops, an error occurred during the migration.<br />Code: " . $ex . "</p>";
@@ -87,7 +89,7 @@ class WordpressMover {
 
 if (isset($_POST['submit'])) {
 
-	$mover = new WordpressMover($_POST['hostname'], $_POST['username'], $_POST['password'], $_POST['database'], $_POST['oldurl'], $_POST['newurl']);
+	$mover = new WordpressMover($_POST['hostname'], $_POST['username'], $_POST['password'], $_POST['database'], $_POST['oldurl'], $_POST['newurl'], $_POST['table_prefix']);
 	$mover->migrate();
 	die();
 }
@@ -105,6 +107,7 @@ if (file_exists("./wp-config.php") && !isset($_POST['submit'])) {
 	$_POST['username'] = DB_USER;
 	$_POST['password'] = DB_PASSWORD;
 	$_POST['database'] = DB_NAME;
+	$_POST['table_prefix'] = $table_prefix;
 } else if (!isset($_POST['submit'])) {
 	$_POST['hostname'] = "localhost";
 }
@@ -145,6 +148,11 @@ if (file_exists("./wp-config.php") && !isset($_POST['submit'])) {
 			<tr>
 				<td>Database:</td>
 				<td><input type="text" name="database" value="<?php echo $_POST['database']; ?>" /></td>
+			</tr>
+			
+			<tr>
+				<td>Table prefix:</td>
+				<td><input type="text" name="database" value="<?php echo $_POST['table_prefix']; ?>" /></td>
 			</tr>
 			
 			<tr></tr>
