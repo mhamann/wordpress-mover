@@ -152,7 +152,7 @@ if (file_exists("./wp-config.php") && !isset($_POST['submit'])) {
 			
 			<tr>
 				<td>Table prefix:</td>
-				<td><input type="text" name="database" value="<?php echo $_POST['table_prefix']; ?>" /></td>
+				<td><input type="text" name="table_prefix" value="<?php echo $_POST['table_prefix']; ?>" /></td>
 			</tr>
 			
 			<tr></tr>
