@@ -30,9 +30,9 @@ class WordpressMover {
 	private $newUrl;
 	private $tablePrefix;
 	
-	private $optionsUpdate = "UPDATE {table_prefix}wp_options SET option_value = replace(option_value, '{oldUrl}', '{newUrl}') WHERE option_name = 'home' OR option_name = 'siteurl';";
-	private $guidUpdate = "UPDATE {table_prefix}wp_posts SET guid = replace(guid, '{oldUrl}','{newUrl}');";
-	private $contentUpdate = "UPDATE {table_prefix}wp_posts SET post_content = replace(post_content, '{oldUrl}', '{newUrl}');";
+	private $optionsUpdate = "UPDATE {table_prefix}options SET option_value = replace(option_value, '{oldUrl}', '{newUrl}') WHERE option_name = 'home' OR option_name = 'siteurl';";
+	private $guidUpdate = "UPDATE {table_prefix}posts SET guid = replace(guid, '{oldUrl}','{newUrl}');";
+	private $contentUpdate = "UPDATE {table_prefix}posts SET post_content = replace(post_content, '{oldUrl}', '{newUrl}');";
 
 	public function __construct($hostname, $username, $password, $database, $oldUrl, $newUrl, $tablePrefix = "") {
 		$this->dbHost = $hostname;
