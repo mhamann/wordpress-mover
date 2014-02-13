@@ -48,13 +48,13 @@ class WordpressMover {
 		$conn = $this->connect();
 		
 		try {
-			mysql_query(str_replace(array("{table_prefix", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->optionsUpdate)) or die(mysql_error());
+			mysql_query(str_replace(array("{table_prefix}", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->optionsUpdate)) or die(mysql_error());
 			echo "<p>" . mysql_affected_rows($conn) . " option rows updated</p>";
 			
-			mysql_query(str_replace(array("{table_prefix", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->guidUpdate)) or die(mysql_error());
+			mysql_query(str_replace(array("{table_prefix}", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->guidUpdate)) or die(mysql_error());
 			echo "<p>" . mysql_affected_rows($conn) . " guid rows updated</p>";
 			
-			mysql_query(str_replace(array("{table_prefix", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->contentUpdate)) or die(mysql_error());
+			mysql_query(str_replace(array("{table_prefix}", "{oldUrl}", "{newUrl}"), array($this->tablePrefix, $this->oldUrl, $this->newUrl), $this->contentUpdate)) or die(mysql_error());
 			echo "<p>" . mysql_affected_rows($conn) . " content rows updated</p>";
 		} catch (Exception $ex) {
 			echo "<p>Whoops, an error occurred during the migration.<br />Code: " . $ex . "</p>";
